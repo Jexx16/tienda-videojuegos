@@ -5,18 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tienda - GameStore</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
             min-height: 100vh;
         }
-
         .navbar {
             background: #0f3460;
             padding: 1rem 2rem;
@@ -29,22 +23,9 @@
             top: 0;
             z-index: 1000;
         }
-
-        .nav-brand {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: white;
-        }
-
+        .nav-brand { font-size: 1.5rem; font-weight: bold; color: white; }
         .nav-brand span { color: #e94560; }
-
-        .nav-links {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
+        .nav-links { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
         .nav-links a {
             color: white;
             text-decoration: none;
@@ -52,7 +33,6 @@
             border-radius: 5px;
             transition: all 0.3s;
         }
-
         .nav-links a:hover { background: #e94560; }
         .btn-cart { background: #e94560; }
         .user-info {
@@ -61,51 +41,17 @@
             border-radius: 20px;
             color: white;
         }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-
+        .container { max-width: 1400px; margin: 2rem auto; padding: 0 2rem; }
         .search-section {
             background: rgba(255,255,255,0.1);
             padding: 2rem;
             border-radius: 20px;
             margin-bottom: 2rem;
         }
-
-        .search-box {
-            display: flex;
-            gap: 1rem;
-            max-width: 600px;
-            margin: 0 auto 1rem;
-        }
-
-        .search-box input {
-            flex: 1;
-            padding: 1rem;
-            border: none;
-            border-radius: 10px;
-            font-size: 1rem;
-        }
-
-        .search-box button {
-            padding: 1rem 2rem;
-            background: #e94560;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-        }
-
-        .filters {
-            display: flex;
-            gap: 0.8rem;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
+        .search-box { display: flex; gap: 1rem; max-width: 600px; margin: 0 auto 1rem; }
+        .search-box input { flex: 1; padding: 1rem; border: none; border-radius: 10px; font-size: 1rem; }
+        .search-box button { padding: 1rem 2rem; background: #e94560; color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; }
+        .filters { display: flex; gap: 0.8rem; justify-content: center; flex-wrap: wrap; }
         .filter-btn {
             padding: 0.5rem 1.2rem;
             background: rgba(255,255,255,0.2);
@@ -113,26 +59,21 @@
             border: none;
             border-radius: 25px;
             cursor: pointer;
+            transition: all 0.3s;
         }
-
         .filter-btn.active, .filter-btn:hover { background: #e94560; }
-
         .games-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 2rem;
         }
-
         .game-card {
             background: white;
             border-radius: 10px;
             overflow: hidden;
             transition: transform 0.3s;
         }
-
         .game-card:hover { transform: translateY(-5px); }
-
-        /* 🔥 IMAGEN UNIFORME 🔥 */
         .game-image {
             width: 100%;
             height: 200px;
@@ -142,25 +83,16 @@
             align-items: center;
             justify-content: center;
         }
-
         .game-image img {
             width: 100%;
             height: 100%;
             object-fit: cover;
             transition: transform 0.3s;
         }
-
         .game-card:hover .game-image img { transform: scale(1.05); }
-
         .game-info { padding: 1.5rem; }
-        .game-info h3 { color: #333; margin-bottom: 0.5rem; }
-        .game-price {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #e94560;
-            margin: 0.5rem 0;
-        }
-
+        .game-info h3 { color: #333; margin-bottom: 0.5rem; font-size: 1.2rem; }
+        .game-price { font-size: 1.5rem; font-weight: bold; color: #e94560; margin: 0.5rem 0; }
         .btn-buy {
             width: 100%;
             padding: 0.8rem;
@@ -170,15 +102,46 @@
             border-radius: 5px;
             cursor: pointer;
             font-weight: bold;
+            transition: all 0.3s;
         }
+        .btn-buy:hover { background: #45a049; transform: scale(1.02); }
+        .btn-buy:disabled { background: #ccc; cursor: not-allowed; transform: none; }
+        .footer { text-align: center; padding: 2rem; color: white; }
 
-        .btn-buy:hover { background: #45a049; }
-        .btn-buy:disabled { background: #ccc; cursor: not-allowed; }
+        /* ========== NOTIFICACIONES MODERNAS ARRIBA ========== */
+        .toast-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            min-width: 320px;
+            max-width: 400px;
+            padding: 16px 20px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.2);
+            z-index: 10000;
+            backdrop-filter: blur(10px);
+            transform: translateX(120%);
+            transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+        }
+        .toast-notification.show { transform: translateX(0); }
+        .toast-notification.success { background: linear-gradient(135deg, #4CAF50, #2E7D32); color: white; border-left: 4px solid #81C784; }
+        .toast-notification.error { background: linear-gradient(135deg, #f44336, #c62828); color: white; border-left: 4px solid #ef9a9a; }
+        .toast-notification.info { background: linear-gradient(135deg, #2196F3, #1565C0); color: white; border-left: 4px solid #90caf9; }
+        .toast-notification.warning { background: linear-gradient(135deg, #ff9800, #e65100); color: white; border-left: 4px solid #ffcc80; }
+        .toast-notification .toast-icon { font-size: 20px; }
+        .toast-notification .toast-message { flex: 1; }
+        .toast-notification .toast-close { cursor: pointer; font-size: 18px; opacity: 0.7; transition: opacity 0.2s; }
+        .toast-notification .toast-close:hover { opacity: 1; }
 
-        .footer {
-            text-align: center;
-            padding: 2rem;
-            color: white;
+        @media (max-width: 768px) {
+            .games-grid { grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); }
+            .search-box { flex-direction: column; }
         }
     </style>
 </head>
@@ -198,11 +161,15 @@
                 <input type="text" id="searchInput" placeholder="Buscar juegos...">
                 <button onclick="buscarJuegos()">🔍 Buscar</button>
             </div>
-            <div class="filters" id="filters">
+            <div class="filters">
                 <button class="filter-btn active" onclick="filtrar('todos')">Todos</button>
                 <button class="filter-btn" onclick="filtrar('Aventura')">Aventura</button>
                 <button class="filter-btn" onclick="filtrar('Acción')">Acción</button>
                 <button class="filter-btn" onclick="filtrar('RPG')">RPG</button>
+                <button class="filter-btn" onclick="filtrar('Plataformas')">Plataformas</button>
+                <button class="filter-btn" onclick="filtrar('Shooter')">Shooter</button>
+                <button class="filter-btn" onclick="filtrar('Sandbox')">Sandbox</button>
+                <button class="filter-btn" onclick="filtrar('Deportes')">Deportes</button>
             </div>
         </div>
 
@@ -221,16 +188,41 @@
 
         const usuarioId = localStorage.getItem('usuarioId');
         const usuarioNombre = localStorage.getItem('usuarioNombre');
+        const usuarioRol = localStorage.getItem('usuarioRol');
 
         if (!usuarioId) window.location.href = "login.html";
 
-        document.getElementById('userInfo').innerText = `👋 ${usuarioNombre}`;
+        document.getElementById('userInfo').innerText = usuarioRol === 'ADMIN' ? `👑 ${usuarioNombre}` : `👋 ${usuarioNombre}`;
         cargarCarritoCount();
+
+        function mostrarToast(mensaje, tipo) {
+            const iconos = { success: '✅', error: '❌', info: 'ℹ️', warning: '⚠️' };
+            const toast = document.createElement('div');
+            toast.className = `toast-notification ${tipo}`;
+            toast.innerHTML = `
+                <div class="toast-icon">${iconos[tipo]}</div>
+                <div class="toast-message">${mensaje}</div>
+                <div class="toast-close">✕</div>
+            `;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.classList.add('show'), 10);
+            toast.querySelector('.toast-close').onclick = () => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            };
+            setTimeout(() => {
+                if (toast.parentNode) {
+                    toast.classList.remove('show');
+                    setTimeout(() => toast.remove(), 300);
+                }
+            }, 4000);
+        }
 
         function cargarJuegos() {
             fetch(API + "/api/juegos/todos")
                 .then(res => res.json())
-                .then(data => { juegos = data; mostrarJuegos(data); });
+                .then(data => { juegos = data; mostrarJuegos(data); })
+                .catch(() => mostrarToast("Error al cargar juegos", "error"));
         }
 
         function mostrarJuegos(lista) {
@@ -246,7 +238,7 @@
                         <div class="game-info">
                             <h3>${juego.titulo}</h3>
                             <div class="game-price">$${juego.precio.toFixed(2)}</div>
-                            <div>Stock: ${juego.stock}</div>
+                            <div style="margin-bottom: 0.5rem;">Stock: ${juego.stock}</div>
                             <button class="btn-buy" onclick="agregarAlCarrito(${juego.id})" ${!disponible ? 'disabled' : ''}>
                                 ${disponible ? '🛒 Agregar al carrito' : '❌ Agotado'}
                             </button>
@@ -258,7 +250,7 @@
         }
 
         function buscarJuegos() {
-            const termino = document.getElementById("searchInput").value;
+            const termino = document.getElementById("searchInput").value.trim();
             if (!termino) { mostrarJuegos(juegos); return; }
             fetch(API + "/api/juegos/buscar?q=" + encodeURIComponent(termino))
                 .then(res => res.json())
@@ -267,7 +259,7 @@
 
         function filtrar(categoria) {
             document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
+            if (event.target.classList) event.target.classList.add('active');
             if (categoria === "todos") { mostrarJuegos(juegos); return; }
             fetch(API + "/api/juegos/categoria/" + categoria)
                 .then(res => res.json())
@@ -282,11 +274,11 @@
             })
             .then(async res => {
                 if (res.ok) {
-                    alert("✅ Juego agregado al carrito");
+                    mostrarToast("✅ Juego agregado al carrito", "success");
                     cargarCarritoCount();
                 } else {
                     const err = await res.text();
-                    alert("❌ " + err);
+                    mostrarToast("❌ " + err, "error");
                 }
             });
         }
@@ -297,7 +289,11 @@
                 .then(data => document.getElementById("cartCount").innerText = data.cantidadItems || 0);
         }
 
-        function logout() { localStorage.clear(); window.location.href = "login.html"; }
+        function logout() {
+            localStorage.clear();
+            mostrarToast("👋 Sesión cerrada", "info");
+            setTimeout(() => window.location.href = "login.html", 1000);
+        }
 
         cargarJuegos();
     </script>

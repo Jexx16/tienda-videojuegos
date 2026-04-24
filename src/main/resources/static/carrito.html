@@ -22,7 +22,12 @@
         .nav-brand { font-size: 1.5rem; font-weight: bold; color: white; }
         .nav-brand span { color: #e94560; }
         .nav-links { display: flex; gap: 1rem; align-items: center; }
-        .nav-links a { color: white; text-decoration: none; padding: 0.5rem 1rem; border-radius: 5px; }
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+        }
         .nav-links a:hover { background: #e94560; }
         .user-info {
             background: rgba(255,255,255,0.2);
@@ -37,9 +42,11 @@
             grid-template-columns: 3fr 1fr 1fr 1fr;
             padding: 1rem;
             border-bottom: 1px solid #eee;
+            align-items: center;
         }
         .cart-header { background: #0f3460; color: white; font-weight: bold; }
-        .cart-item { align-items: center; }
+        .cart-item { text-align: center; }
+        .cart-item div:first-child { text-align: left; }
         .cart-total { text-align: right; padding: 1rem; font-size: 1.2rem; font-weight: bold; border-top: 2px solid #eee; }
         .btn-checkout {
             background: #4CAF50;
@@ -53,28 +60,101 @@
             margin-top: 1rem;
         }
         .btn-checkout:hover { background: #45a049; }
-        .btn-remove {
-            background: #ff4444;
-            color: white;
-            border: none;
-            padding: 0.3rem 0.8rem;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .btn-update {
-            background: #2196F3;
-            color: white;
-            border: none;
-            padding: 0.3rem 0.8rem;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .cart-empty {
-            text-align: center;
-            padding: 3rem;
-            color: #666;
-        }
+        .btn-remove { background: #ff4444; color: white; border: none; padding: 0.3rem 0.8rem; border-radius: 5px; cursor: pointer; }
+        .btn-update { background: #2196F3; color: white; border: none; padding: 0.3rem 0.8rem; border-radius: 5px; cursor: pointer; }
+        .cart-empty { text-align: center; padding: 3rem; color: #666; }
         .footer { text-align: center; padding: 2rem; color: white; }
+
+        /* ========== NOTIFICACIONES MODERNAS ========== */
+        .toast-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            min-width: 320px;
+            max-width: 400px;
+            padding: 16px 20px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.2);
+            z-index: 10000;
+            backdrop-filter: blur(10px);
+            transform: translateX(120%);
+            transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+        }
+        .toast-notification.show { transform: translateX(0); }
+        .toast-notification.success { background: linear-gradient(135deg, #4CAF50, #2E7D32); color: white; border-left: 4px solid #81C784; }
+        .toast-notification.error { background: linear-gradient(135deg, #f44336, #c62828); color: white; border-left: 4px solid #ef9a9a; }
+        .toast-notification.info { background: linear-gradient(135deg, #2196F3, #1565C0); color: white; border-left: 4px solid #90caf9; }
+        .toast-notification .toast-icon { font-size: 20px; }
+        .toast-notification .toast-message { flex: 1; }
+        .toast-notification .toast-close { cursor: pointer; font-size: 18px; opacity: 0.7; transition: opacity 0.2s; }
+        .toast-notification .toast-close:hover { opacity: 1; }
+
+        /* ========== MODAL DE CONFIRMACIÓN ========== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 10001;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s ease;
+        }
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            animation: slideUp 0.3s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .modal-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+        }
+        .btn-confirm {
+            background: #4CAF50;
+            color: white;
+            padding: 0.8rem 2rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        .btn-confirm:hover { background: #45a049; transform: scale(1.02); }
+        .btn-cancel {
+            background: #f44336;
+            color: white;
+            padding: 0.8rem 2rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        .btn-cancel:hover { background: #d32f2f; transform: scale(1.02); }
     </style>
 </head>
 <body>
@@ -104,6 +184,54 @@
 
         if (!usuarioId) window.location.href = "login.html";
         document.getElementById('userInfo').innerText = `👋 ${usuarioNombre}`;
+
+        function mostrarToast(mensaje, tipo) {
+            const iconos = { success: '✅', error: '❌', info: 'ℹ️', warning: '⚠️' };
+            const toast = document.createElement('div');
+            toast.className = `toast-notification ${tipo}`;
+            toast.innerHTML = `
+                <div class="toast-icon">${iconos[tipo]}</div>
+                <div class="toast-message">${mensaje}</div>
+                <div class="toast-close">✕</div>
+            `;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.classList.add('show'), 10);
+            toast.querySelector('.toast-close').onclick = () => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            };
+            setTimeout(() => {
+                if (toast.parentNode) {
+                    toast.classList.remove('show');
+                    setTimeout(() => toast.remove(), 300);
+                }
+            }, 4000);
+        }
+
+        function mostrarConfirmacion(mensaje, titulo, onConfirm) {
+            const modal = document.createElement('div');
+            modal.className = 'modal-overlay';
+            modal.style.display = 'flex';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">🎮</div>
+                    <h3 style="color: #333; margin-bottom: 0.5rem;">${titulo}</h3>
+                    <p style="color: #666; margin-bottom: 1.5rem;">${mensaje}</p>
+                    <div class="modal-buttons">
+                        <button class="btn-confirm" id="modalConfirmBtn">✅ Sí, comprar</button>
+                        <button class="btn-cancel" id="modalCancelBtn">❌ Cancelar</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            document.getElementById('modalConfirmBtn').onclick = () => {
+                modal.remove();
+                onConfirm();
+            };
+            document.getElementById('modalCancelBtn').onclick = () => {
+                modal.remove();
+            };
+        }
 
         function cargarCarrito() {
             fetch(API + "/api/carrito/usuario/" + usuarioId)
@@ -140,19 +268,17 @@
                     <div class="cart-item">
                         <div>${item.juego.titulo}</div>
                         <div>
-                            <input type="number" id="cantidad-${item.id}" value="${item.cantidad}" min="1" style="width:60px; padding:0.3rem;">
-                            <button class="btn-update" onclick="actualizarCantidad(${item.id})">Actualizar</button>
+                            <input type="number" id="cantidad-${item.id}" value="${item.cantidad}" min="1" style="width:60px; padding:0.3rem; text-align:center;">
+                            <button class="btn-update" onclick="actualizarCantidad(${item.id})">Act.</button>
                         </div>
-                        <div>$${item.precioUnitario}</div>
+                        <div>$${item.precioUnitario.toFixed(2)}</div>
                         <div><button class="btn-remove" onclick="eliminarItem(${item.id})">Eliminar</button></div>
                     </div>
                 `;
             });
 
             html += `
-                <div class="cart-total">
-                    Total: $${total.toFixed(2)}
-                </div>
+                <div class="cart-total">Total: $${total.toFixed(2)}</div>
                 <button class="btn-checkout" onclick="checkout()">✅ Finalizar Compra</button>
             `;
 
@@ -171,7 +297,7 @@
                     cargarCarrito();
                 } else {
                     const err = await res.text();
-                    alert("❌ " + err);
+                    mostrarToast("❌ " + err, "error");
                 }
             });
         }
@@ -183,21 +309,26 @@
         }
 
         function checkout() {
-            if (!confirm("¿Confirmas la compra?")) return;
-            fetch(API + "/api/ventas/procesar", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ usuarioId: parseInt(usuarioId) })
-            })
-            .then(async res => {
-                if (res.ok) {
-                    alert("✅ Compra realizada con éxito!");
-                    window.location.href = "/tienda.html";
-                } else {
-                    const err = await res.text();
-                    alert("❌ " + err);
+            mostrarConfirmacion(
+                "¿Estás seguro de que deseas finalizar esta compra?",
+                "Confirmar compra",
+                () => {
+                    fetch(API + "/api/ventas/procesar", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ usuarioId: parseInt(usuarioId) })
+                    })
+                    .then(async res => {
+                        if (res.ok) {
+                            mostrarToast("✅ Compra realizada con éxito!", "success");
+                            setTimeout(() => window.location.href = "/tienda.html", 1500);
+                        } else {
+                            const err = await res.text();
+                            mostrarToast("❌ " + err, "error");
+                        }
+                    });
                 }
-            });
+            );
         }
 
         function logout() {

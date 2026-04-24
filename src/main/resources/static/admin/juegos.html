@@ -112,6 +112,7 @@
             background: rgba(0,0,0,0.5);
             justify-content: center;
             align-items: center;
+            z-index: 10001;
         }
         .modal-content {
             background: white;
@@ -137,6 +138,36 @@
             margin-right: 1rem;
         }
         .btn-cancel { background: #ff4444; }
+
+        /* ========== NOTIFICACIONES MODERNAS ========== */
+        .toast-notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            min-width: 320px;
+            max-width: 400px;
+            padding: 16px 20px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.2);
+            z-index: 10000;
+            backdrop-filter: blur(10px);
+            transform: translateX(120%);
+            transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+        }
+        .toast-notification.show { transform: translateX(0); }
+        .toast-notification.success { background: linear-gradient(135deg, #4CAF50, #2E7D32); color: white; border-left: 4px solid #81C784; }
+        .toast-notification.error { background: linear-gradient(135deg, #f44336, #c62828); color: white; border-left: 4px solid #ef9a9a; }
+        .toast-notification.info { background: linear-gradient(135deg, #2196F3, #1565C0); color: white; border-left: 4px solid #90caf9; }
+        .toast-notification .toast-icon { font-size: 20px; }
+        .toast-notification .toast-message { flex: 1; }
+        .toast-notification .toast-close { cursor: pointer; font-size: 18px; opacity: 0.7; transition: opacity 0.2s; }
+        .toast-notification .toast-close:hover { opacity: 1; }
     </style>
 </head>
 <body>
@@ -178,27 +209,19 @@
             <input type="text" id="titulo" required>
             <label>Categoría:</label>
             <select id="categoria">
-                <option value="Aventura">Aventura</option>
-                <option value="Acción">Acción</option>
-                <option value="RPG">RPG</option>
-                <option value="Plataformas">Plataformas</option>
-                <option value="Shooter">Shooter</option>
-                <option value="Sandbox">Sandbox</option>
-                <option value="Deportes">Deportes</option>
+                <option value="Aventura">Aventura</option><option value="Acción">Acción</option><option value="RPG">RPG</option>
+                <option value="Plataformas">Plataformas</option><option value="Shooter">Shooter</option><option value="Deportes">Deportes</option>
             </select>
             <label>Plataforma:</label>
             <select id="plataforma">
-                <option value="Nintendo Switch">Nintendo Switch</option>
-                <option value="PlayStation 5">PlayStation 5</option>
-                <option value="PC">PC</option>
-                <option value="Xbox Series X">Xbox Series X</option>
-                <option value="Multiplataforma">Multiplataforma</option>
+                <option value="Nintendo Switch">Nintendo Switch</option><option value="PlayStation 5">PlayStation 5</option>
+                <option value="PC">PC</option><option value="Multiplataforma">Multiplataforma</option>
             </select>
             <label>Precio:</label>
             <input type="number" id="precio" step="0.01" min="0" required>
             <label>Stock:</label>
             <input type="number" id="stock" min="0" value="1">
-            <label>Imagen URL (nombre del archivo):</label>
+            <label>Imagen URL:</label>
             <input type="text" id="imagenUrl" placeholder="ej: zelda.jpg">
             <label>Descripción:</label>
             <textarea id="descripcion" rows="3"></textarea>
@@ -220,6 +243,29 @@
         if (!usuarioId || usuarioRol !== 'ADMIN') window.location.href = "/login.html";
         document.getElementById('userInfo').innerText = `👑 ${usuarioNombre}`;
 
+        function mostrarToast(mensaje, tipo) {
+            const iconos = { success: '✅', error: '❌', info: 'ℹ️', warning: '⚠️' };
+            const toast = document.createElement('div');
+            toast.className = `toast-notification ${tipo}`;
+            toast.innerHTML = `
+                <div class="toast-icon">${iconos[tipo]}</div>
+                <div class="toast-message">${mensaje}</div>
+                <div class="toast-close">✕</div>
+            `;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.classList.add('show'), 10);
+            toast.querySelector('.toast-close').onclick = () => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            };
+            setTimeout(() => {
+                if (toast.parentNode) {
+                    toast.classList.remove('show');
+                    setTimeout(() => toast.remove(), 300);
+                }
+            }, 4000);
+        }
+
         function cargarJuegos() {
             fetch(API + "/api/admin/juegos")
                 .then(res => res.json())
@@ -229,21 +275,16 @@
         function mostrarJuegos(lista) {
             let html = "";
             lista.forEach(juego => {
-                html += `
-                    <tr>
-                        <td>${juego.id}</td>
-                        <td>${juego.imagenUrl ? '🖼️' : '🎮'}</td>
-                        <td>${juego.titulo}</td>
-                        <td>${juego.categoria || '-'}</td>
-                        <td>${juego.plataforma || '-'}</td>
-                        <td>$${juego.precio.toFixed(2)}</td>
-                        <td>${juego.stock}</td>
-                        <td>
-                            <button class="btn-edit" onclick="editarJuego(${juego.id})">✏️ Editar</button>
-                            <button class="btn-delete" onclick="eliminarJuego(${juego.id})">🗑️ Eliminar</button>
-                        </td>
-                    </tr>
-                `;
+                html += `<tr>
+                    <td>${juego.id}</td>
+                    <td>${juego.imagenUrl ? '🖼️' : '🎮'}</td>
+                    <td>${juego.titulo}</td>
+                    <td>${juego.categoria || '-'}</td>
+                    <td>${juego.plataforma || '-'}</td>
+                    <td>$${juego.precio.toFixed(2)}</td>
+                    <td>${juego.stock}</td>
+                    <td><button class="btn-edit" onclick="editarJuego(${juego.id})">✏️ Editar</button><button class="btn-delete" onclick="eliminarJuego(${juego.id})">🗑️ Eliminar</button></td>
+                </tr>`;
             });
             document.getElementById("listaJuegos").innerHTML = html || '<tr><td colspan="8">No hay juegos</td></tr>';
         }
@@ -259,12 +300,8 @@
             document.getElementById('modalTitulo').innerText = 'Nuevo Juego';
             document.getElementById('juegoId').value = '';
             document.getElementById('titulo').value = '';
-            document.getElementById('categoria').value = 'Aventura';
-            document.getElementById('plataforma').value = 'Multiplataforma';
             document.getElementById('precio').value = '';
             document.getElementById('stock').value = 1;
-            document.getElementById('imagenUrl').value = '';
-            document.getElementById('descripcion').value = '';
             document.getElementById('modalJuego').style.display = 'flex';
         }
 
@@ -293,25 +330,21 @@
                 imagenUrl: document.getElementById('imagenUrl').value,
                 descripcion: document.getElementById('descripcion').value
             };
-            if (!juego.titulo || !juego.precio) { alert("Título y precio son obligatorios"); return; }
+            if (!juego.titulo || !juego.precio) { mostrarToast("Título y precio son obligatorios", "error"); return; }
 
             const id = document.getElementById('juegoId').value;
             const url = id ? API + "/api/admin/juegos/" + id : API + "/api/admin/juegos";
             const method = id ? 'PUT' : 'POST';
 
-            fetch(url, {
-                method: method,
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(juego)
-            })
+            fetch(url, { method: method, headers: { "Content-Type": "application/json" }, body: JSON.stringify(juego) })
             .then(async res => {
                 if (res.ok) {
-                    alert(id ? '✅ Juego actualizado' : '✅ Juego creado');
+                    mostrarToast(id ? '✅ Juego actualizado' : '✅ Juego creado', "success");
                     cerrarModal();
                     cargarJuegos();
                 } else {
                     const err = await res.text();
-                    alert("❌ " + err);
+                    mostrarToast("❌ " + err, "error");
                 }
             });
         }

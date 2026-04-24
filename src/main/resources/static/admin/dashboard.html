@@ -72,6 +72,36 @@
         }
         .admin-link:hover { background: #0f3460; color: white; }
         .footer { text-align: center; padding: 2rem; color: white; margin-top: 2rem; }
+
+        /* ========== NOTIFICACIONES MODERNAS ========== */
+        .toast-notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            min-width: 320px;
+            max-width: 400px;
+            padding: 16px 20px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.2);
+            z-index: 10000;
+            backdrop-filter: blur(10px);
+            transform: translateX(120%);
+            transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+        }
+        .toast-notification.show { transform: translateX(0); }
+        .toast-notification.success { background: linear-gradient(135deg, #4CAF50, #2E7D32); color: white; border-left: 4px solid #81C784; }
+        .toast-notification.error { background: linear-gradient(135deg, #f44336, #c62828); color: white; border-left: 4px solid #ef9a9a; }
+        .toast-notification.info { background: linear-gradient(135deg, #2196F3, #1565C0); color: white; border-left: 4px solid #90caf9; }
+        .toast-notification .toast-icon { font-size: 20px; }
+        .toast-notification .toast-message { flex: 1; }
+        .toast-notification .toast-close { cursor: pointer; font-size: 18px; opacity: 0.7; transition: opacity 0.2s; }
+        .toast-notification .toast-close:hover { opacity: 1; }
     </style>
 </head>
 <body>
@@ -128,6 +158,29 @@
         }
         document.getElementById('userInfo').innerText = `👑 ${usuarioNombre}`;
 
+        function mostrarToast(mensaje, tipo) {
+            const iconos = { success: '✅', error: '❌', info: 'ℹ️', warning: '⚠️' };
+            const toast = document.createElement('div');
+            toast.className = `toast-notification ${tipo}`;
+            toast.innerHTML = `
+                <div class="toast-icon">${iconos[tipo]}</div>
+                <div class="toast-message">${mensaje}</div>
+                <div class="toast-close">✕</div>
+            `;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.classList.add('show'), 10);
+            toast.querySelector('.toast-close').onclick = () => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            };
+            setTimeout(() => {
+                if (toast.parentNode) {
+                    toast.classList.remove('show');
+                    setTimeout(() => toast.remove(), 300);
+                }
+            }, 4000);
+        }
+
         function cargarStats() {
             fetch(API + "/api/admin/stats")
                 .then(res => res.json())
@@ -137,12 +190,18 @@
                     document.getElementById('totalUsuarios').innerText = data.totalUsuarios || '0';
                     document.getElementById('totalJuegos').innerText = data.totalJuegos || '0';
                 })
-                .catch(err => console.error("Error cargando stats:", err));
+                .catch(err => {
+                    console.error("Error cargando stats:", err);
+                    mostrarToast("Error al cargar estadísticas", "error");
+                });
         }
 
         function logout() {
             localStorage.clear();
-            window.location.href = "/login.html";
+            mostrarToast("👋 Sesión cerrada", "info");
+            setTimeout(() => {
+                window.location.href = "/login.html";
+            }, 800);
         }
 
         cargarStats();
