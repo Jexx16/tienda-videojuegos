@@ -1,0 +1,17 @@
+com\tienda\model\CarritoItem.class
+com\tienda\service\VentaService.class
+com\tienda\TiendaVideojuegosApplication.class
+com\tienda\repository\CarritoItemRepository.class
+com\tienda\model\Juego.class
+com\tienda\model\Usuario.class
+com\tienda\controller\CarritoController.class
+com\tienda\controller\UsuarioController.class
+com\tienda\controller\AdminController.class
+com\tienda\controller\VentaController.class
+com\tienda\model\Venta.class
+com\tienda\repository\ItemVentaRepository.class
+com\tienda\model\ItemVenta.class
+com\tienda\repository\JuegoRepository.class
+com\tienda\repository\UsuarioRepository.class
+com\tienda\controller\JuegoController.class
+com\tienda\repository\VentaRepository.class

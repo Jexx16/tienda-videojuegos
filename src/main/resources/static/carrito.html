@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrito - GameStore</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+        }
+        .navbar {
+            background: #0f3460;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .nav-brand { font-size: 1.5rem; font-weight: bold; color: white; }
+        .nav-brand span { color: #e94560; }
+        .nav-links { display: flex; gap: 1rem; align-items: center; }
+        .nav-links a { color: white; text-decoration: none; padding: 0.5rem 1rem; border-radius: 5px; }
+        .nav-links a:hover { background: #e94560; }
+        .user-info {
+            background: rgba(255,255,255,0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            color: white;
+        }
+        .container { max-width: 1000px; margin: 2rem auto; padding: 0 1rem; }
+        .cart-container { background: white; border-radius: 10px; overflow: hidden; }
+        .cart-header, .cart-item {
+            display: grid;
+            grid-template-columns: 3fr 1fr 1fr 1fr;
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+        .cart-header { background: #0f3460; color: white; font-weight: bold; }
+        .cart-item { align-items: center; }
+        .cart-total { text-align: right; padding: 1rem; font-size: 1.2rem; font-weight: bold; border-top: 2px solid #eee; }
+        .btn-checkout {
+            background: #4CAF50;
+            color: white;
+            padding: 1rem;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 1rem;
+        }
+        .btn-checkout:hover { background: #45a049; }
+        .btn-remove {
+            background: #ff4444;
+            color: white;
+            border: none;
+            padding: 0.3rem 0.8rem;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .btn-update {
+            background: #2196F3;
+            color: white;
+            border: none;
+            padding: 0.3rem 0.8rem;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .cart-empty {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+        }
+        .footer { text-align: center; padding: 2rem; color: white; }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="nav-brand">🎮 <span>Game</span>Store</div>
+        <div class="nav-links">
+            <span class="user-info" id="userInfo">Cargando...</span>
+            <a href="/tienda.html">🏠 Tienda</a>
+            <a href="javascript:logout()">🚪 Salir</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div id="carritoContainer" class="cart-container">
+            <div>Cargando carrito...</div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>© 2026 GameStore - Todos los derechos reservados</p>
+    </div>
+
+    <script>
+        const API = "http://localhost:8080";
+        const usuarioId = localStorage.getItem('usuarioId');
+        const usuarioNombre = localStorage.getItem('usuarioNombre');
+
+        if (!usuarioId) window.location.href = "login.html";
+        document.getElementById('userInfo').innerText = `👋 ${usuarioNombre}`;
+
+        function cargarCarrito() {
+            fetch(API + "/api/carrito/usuario/" + usuarioId)
+                .then(res => res.json())
+                .then(data => mostrarCarrito(data));
+        }
+
+        function mostrarCarrito(data) {
+            const items = data.items || [];
+            const total = data.total || 0;
+
+            if (items.length === 0) {
+                document.getElementById("carritoContainer").innerHTML = `
+                    <div class="cart-empty">
+                        <h3>🛒 Tu carrito está vacío</h3>
+                        <p>Explora nuestra tienda y agrega juegos.</p>
+                        <a href="/tienda.html" style="background:#e94560; color:white; padding:0.5rem 1rem; text-decoration:none; border-radius:5px; display:inline-block; margin-top:1rem;">Ir a la tienda</a>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = `
+                <div class="cart-header">
+                    <div>Juego</div>
+                    <div>Cantidad</div>
+                    <div>Precio</div>
+                    <div>Acciones</div>
+                </div>
+            `;
+
+            items.forEach(item => {
+                html += `
+                    <div class="cart-item">
+                        <div>${item.juego.titulo}</div>
+                        <div>
+                            <input type="number" id="cantidad-${item.id}" value="${item.cantidad}" min="1" style="width:60px; padding:0.3rem;">
+                            <button class="btn-update" onclick="actualizarCantidad(${item.id})">Actualizar</button>
+                        </div>
+                        <div>$${item.precioUnitario}</div>
+                        <div><button class="btn-remove" onclick="eliminarItem(${item.id})">Eliminar</button></div>
+                    </div>
+                `;
+            });
+
+            html += `
+                <div class="cart-total">
+                    Total: $${total.toFixed(2)}
+                </div>
+                <button class="btn-checkout" onclick="checkout()">✅ Finalizar Compra</button>
+            `;
+
+            document.getElementById("carritoContainer").innerHTML = html;
+        }
+
+        function actualizarCantidad(itemId) {
+            const cantidad = document.getElementById(`cantidad-${itemId}`).value;
+            fetch(API + "/api/carrito/actualizar/" + itemId, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ cantidad: parseInt(cantidad) })
+            })
+            .then(async res => {
+                if (res.ok) {
+                    cargarCarrito();
+                } else {
+                    const err = await res.text();
+                    alert("❌ " + err);
+                }
+            });
+        }
+
+        function eliminarItem(itemId) {
+            if (!confirm("¿Eliminar este juego del carrito?")) return;
+            fetch(API + "/api/carrito/eliminar/" + itemId, { method: "DELETE" })
+                .then(() => cargarCarrito());
+        }
+
+        function checkout() {
+            if (!confirm("¿Confirmas la compra?")) return;
+            fetch(API + "/api/ventas/procesar", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ usuarioId: parseInt(usuarioId) })
+            })
+            .then(async res => {
+                if (res.ok) {
+                    alert("✅ Compra realizada con éxito!");
+                    window.location.href = "/tienda.html";
+                } else {
+                    const err = await res.text();
+                    alert("❌ " + err);
+                }
+            });
+        }
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = "login.html";
+        }
+
+        cargarCarrito();
+    </script>
+</body>
+</html>

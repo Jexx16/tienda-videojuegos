@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tienda - GameStore</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: #0f3460;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+        }
+
+        .nav-brand span { color: #e94560; }
+
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+
+        .nav-links a:hover { background: #e94560; }
+        .btn-cart { background: #e94560; }
+        .user-info {
+            background: rgba(255,255,255,0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            color: white;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .search-section {
+            background: rgba(255,255,255,0.1);
+            padding: 2rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 1rem;
+            max-width: 600px;
+            margin: 0 auto 1rem;
+        }
+
+        .search-box input {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+        }
+
+        .search-box button {
+            padding: 1rem 2rem;
+            background: #e94560;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .filters {
+            display: flex;
+            gap: 0.8rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 0.5rem 1.2rem;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+        }
+
+        .filter-btn.active, .filter-btn:hover { background: #e94560; }
+
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .game-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+
+        .game-card:hover { transform: translateY(-5px); }
+
+        /* 🔥 IMAGEN UNIFORME 🔥 */
+        .game-image {
+            width: 100%;
+            height: 200px;
+            overflow: hidden;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .game-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+
+        .game-card:hover .game-image img { transform: scale(1.05); }
+
+        .game-info { padding: 1.5rem; }
+        .game-info h3 { color: #333; margin-bottom: 0.5rem; }
+        .game-price {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #e94560;
+            margin: 0.5rem 0;
+        }
+
+        .btn-buy {
+            width: 100%;
+            padding: 0.8rem;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-buy:hover { background: #45a049; }
+        .btn-buy:disabled { background: #ccc; cursor: not-allowed; }
+
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="nav-brand">🎮 <span>Game</span>Store</div>
+        <div class="nav-links">
+            <span class="user-info" id="userInfo">Cargando...</span>
+            <a href="/carrito.html" class="btn-cart">🛒 Carrito (<span id="cartCount">0</span>)</a>
+            <a href="javascript:logout()">🚪 Salir</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="search-section">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Buscar juegos...">
+                <button onclick="buscarJuegos()">🔍 Buscar</button>
+            </div>
+            <div class="filters" id="filters">
+                <button class="filter-btn active" onclick="filtrar('todos')">Todos</button>
+                <button class="filter-btn" onclick="filtrar('Aventura')">Aventura</button>
+                <button class="filter-btn" onclick="filtrar('Acción')">Acción</button>
+                <button class="filter-btn" onclick="filtrar('RPG')">RPG</button>
+            </div>
+        </div>
+
+        <div id="gamesContainer" class="games-grid">
+            <div style="text-align:center;color:white;">Cargando juegos...</div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>© 2026 GameStore - Todos los derechos reservados</p>
+    </div>
+
+    <script>
+        const API = "http://localhost:8080";
+        let juegos = [];
+
+        const usuarioId = localStorage.getItem('usuarioId');
+        const usuarioNombre = localStorage.getItem('usuarioNombre');
+
+        if (!usuarioId) window.location.href = "login.html";
+
+        document.getElementById('userInfo').innerText = `👋 ${usuarioNombre}`;
+        cargarCarritoCount();
+
+        function cargarJuegos() {
+            fetch(API + "/api/juegos/todos")
+                .then(res => res.json())
+                .then(data => { juegos = data; mostrarJuegos(data); });
+        }
+
+        function mostrarJuegos(lista) {
+            let html = "";
+            lista.forEach(juego => {
+                const disponible = juego.stock > 0;
+                const imagenUrl = juego.imagenUrl ? `/images/${juego.imagenUrl}` : "";
+                html += `
+                    <div class="game-card">
+                        <div class="game-image">
+                            ${imagenUrl ? `<img src="${imagenUrl}" alt="${juego.titulo}" onerror="this.src='https://via.placeholder.com/400x400?text=🎮'">` : '<div style="font-size:4rem;">🎮</div>'}
+                        </div>
+                        <div class="game-info">
+                            <h3>${juego.titulo}</h3>
+                            <div class="game-price">$${juego.precio.toFixed(2)}</div>
+                            <div>Stock: ${juego.stock}</div>
+                            <button class="btn-buy" onclick="agregarAlCarrito(${juego.id})" ${!disponible ? 'disabled' : ''}>
+                                ${disponible ? '🛒 Agregar al carrito' : '❌ Agotado'}
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+            document.getElementById("gamesContainer").innerHTML = html;
+        }
+
+        function buscarJuegos() {
+            const termino = document.getElementById("searchInput").value;
+            if (!termino) { mostrarJuegos(juegos); return; }
+            fetch(API + "/api/juegos/buscar?q=" + encodeURIComponent(termino))
+                .then(res => res.json())
+                .then(data => mostrarJuegos(data));
+        }
+
+        function filtrar(categoria) {
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            if (categoria === "todos") { mostrarJuegos(juegos); return; }
+            fetch(API + "/api/juegos/categoria/" + categoria)
+                .then(res => res.json())
+                .then(data => mostrarJuegos(data));
+        }
+
+        function agregarAlCarrito(juegoId) {
+            fetch(API + "/api/carrito/agregar", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ usuarioId: parseInt(usuarioId), juegoId: juegoId, cantidad: 1 })
+            })
+            .then(async res => {
+                if (res.ok) {
+                    alert("✅ Juego agregado al carrito");
+                    cargarCarritoCount();
+                } else {
+                    const err = await res.text();
+                    alert("❌ " + err);
+                }
+            });
+        }
+
+        function cargarCarritoCount() {
+            fetch(API + "/api/carrito/usuario/" + usuarioId)
+                .then(res => res.json())
+                .then(data => document.getElementById("cartCount").innerText = data.cantidadItems || 0);
+        }
+
+        function logout() { localStorage.clear(); window.location.href = "login.html"; }
+
+        cargarJuegos();
+    </script>
+</body>
+</html>

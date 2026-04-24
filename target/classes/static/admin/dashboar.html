@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - GameStore</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+        }
+        .navbar {
+            background: #0f3460;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .nav-brand { font-size: 1.5rem; font-weight: bold; color: white; }
+        .nav-brand span { color: #e94560; }
+        .nav-links { display: flex; gap: 1rem; align-items: center; }
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            background: rgba(255,255,255,0.2);
+            transition: all 0.3s;
+        }
+        .nav-links a:hover { background: #e94560; }
+        .user-info {
+            background: rgba(255,255,255,0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            color: white;
+        }
+        .container { max-width: 1200px; margin: 2rem auto; padding: 0 1rem; }
+        h1 { color: white; text-align: center; margin-bottom: 2rem; }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .stat-card h3 { font-size: 2rem; color: #e94560; margin-bottom: 0.5rem; }
+        .stat-card p { color: #666; }
+        .admin-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        .admin-link {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-decoration: none;
+            color: #333;
+            text-align: center;
+            font-weight: bold;
+            border: 2px solid #0f3460;
+            transition: all 0.3s;
+        }
+        .admin-link:hover { background: #0f3460; color: white; }
+        .footer { text-align: center; padding: 2rem; color: white; margin-top: 2rem; }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="nav-brand">🎮 <span>Game</span>Store Admin</div>
+        <div class="nav-links">
+            <span class="user-info" id="userInfo">Cargando...</span>
+            <a href="/admin/dashboard.html">📊 Dashboard</a>
+            <a href="/admin/juegos.html">🎮 Gestionar Juegos</a>
+            <a href="javascript:logout()">🚪 Salir</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <h1>📊 Panel de Administrador</h1>
+
+        <div class="stats">
+            <div class="stat-card">
+                <h3 id="totalVentas">-</h3>
+                <p>Total Ventas ($)</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="cantidadVentas">-</h3>
+                <p>Ventas Realizadas</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="totalUsuarios">-</h3>
+                <p>Usuarios Registrados</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="totalJuegos">-</h3>
+                <p>Juegos en Tienda</p>
+            </div>
+        </div>
+
+        <div class="admin-links">
+            <a href="/admin/juegos.html" class="admin-link">🎮 Gestionar Juegos</a>
+            <a href="/tienda.html" class="admin-link">👁️ Ver Tienda</a>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>© 2026 GameStore - Administración</p>
+    </div>
+
+    <script>
+        const API = "http://localhost:8080";
+        const usuarioId = localStorage.getItem('usuarioId');
+        const usuarioNombre = localStorage.getItem('usuarioNombre');
+        const usuarioRol = localStorage.getItem('usuarioRol');
+
+        if (!usuarioId || usuarioRol !== 'ADMIN') {
+            window.location.href = "/login.html";
+        }
+        document.getElementById('userInfo').innerText = `👑 ${usuarioNombre}`;
+
+        function cargarStats() {
+            fetch(API + "/api/admin/stats")
+                .then(res => res.json())
+                .then(data => {
+                    document.getElementById('totalVentas').innerText = data.totalVentas ? data.totalVentas.toFixed(2) : '0';
+                    document.getElementById('cantidadVentas').innerText = data.cantidadVentas || '0';
+                    document.getElementById('totalUsuarios').innerText = data.totalUsuarios || '0';
+                    document.getElementById('totalJuegos').innerText = data.totalJuegos || '0';
+                })
+                .catch(err => console.error("Error cargando stats:", err));
+        }
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = "/login.html";
+        }
+
+        cargarStats();
+    </script>
+</body>
+</html>

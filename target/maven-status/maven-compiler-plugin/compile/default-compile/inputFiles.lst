@@ -1,0 +1,17 @@
+C:\Users\USUARIO\Documents\tienda-videojuegos\tienda-videojuegos\src\main\java\com\tienda\controller\AdminController.java
+C:\Users\USUARIO\Documents\tienda-videojuegos\tienda-videojuegos\src\main\java\com\tienda\controller\CarritoController.java
+C:\Users\USUARIO\Documents\tienda-videojuegos\tienda-videojuegos\src\main\java\com\tienda\controller\JuegoController.java
+C:\Users\USUARIO\Documents\tienda-videojuegos\tienda-videojuegos\src\main\java\com\tienda\controller\UsuarioController.java
+C:\Users\USUARIO\Documents\tienda-videojuegos\tienda-videojuegos\src\main\java\com\tienda\controller\VentaController.java
+C:\Users\USUARIO\Documents\tienda-videojuegos\tienda-videojuegos\src\main\java\com\tienda\model\CarritoItem.java
+C:\Users\USUARIO\Documents\tienda-videojuegos\tienda-videojuegos\src\main\java\com\tienda\model\ItemVenta.java
+C:\Users\USUARIO\Documents\tienda-videojuegos\tienda-videojuegos\src\main\java\com\tienda\model\Juego.java
+C:\Users\USUARIO\Documents\tienda-videojuegos\tienda-videojuegos\src\main\java\com\tienda\model\Usuario.java
+C:\Users\USUARIO\Documents\tienda-videojuegos\tienda-videojuegos\src\main\java\com\tienda\model\Venta.java
+C:\Users\USUARIO\Documents\tienda-videojuegos\tienda-videojuegos\src\main\java\com\tienda\repository\CarritoItemRepository.java
+C:\Users\USUARIO\Documents\tienda-videojuegos\tienda-videojuegos\src\main\java\com\tienda\repository\ItemVentaRepository.java
+C:\Users\USUARIO\Documents\tienda-videojuegos\tienda-videojuegos\src\main\java\com\tienda\repository\JuegoRepository.java
+C:\Users\USUARIO\Documents\tienda-videojuegos\tienda-videojuegos\src\main\java\com\tienda\repository\UsuarioRepository.java
+C:\Users\USUARIO\Documents\tienda-videojuegos\tienda-videojuegos\src\main\java\com\tienda\repository\VentaRepository.java
+C:\Users\USUARIO\Documents\tienda-videojuegos\tienda-videojuegos\src\main\java\com\tienda\service\VentaService.java
+C:\Users\USUARIO\Documents\tienda-videojuegos\tienda-videojuegos\src\main\java\com\tienda\TiendaVideojuegosApplication.java
