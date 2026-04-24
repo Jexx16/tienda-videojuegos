@@ -1,9 +1,9 @@
-# 🎮 GameStore - Tienda de Videojuegos
+#  GameStore - Tienda de Videojuegos
 
-## 📋 Descripción
+##  Descripción
 Tienda online de videojuegos desarrollada con **Spring Boot**, **MySQL**, **HTML**, **CSS** y **JavaScript**. Permite a los usuarios comprar videojuegos y a los administradores gestionar el inventario.
 
-## 🛠️ Tecnologías utilizadas
+##  Tecnologías utilizadas
 - **Backend:** Java 25, Spring Boot 3.5.14, Spring Data JPA, Hibernate
 - **Frontend:** HTML5, CSS3, JavaScript (ES6)
 - **Base de Datos:** MySQL 8.0
@@ -15,7 +15,7 @@ Tienda online de videojuegos desarrollada con **Spring Boot**, **MySQL**, **HTML
 git clone https://github.com/Jexx16/tienda-videojuegos.git
 cd tienda-videojuegos
 
-## 🚀 Instalación y ejecución
+##  Instalación y ejecución
  Crear la base de datos
 Abrir MySQL Workbench
 
